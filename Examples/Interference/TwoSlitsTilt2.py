@@ -1,7 +1,7 @@
 #! python3
 
 import matplotlib.pyplot as plt
-from LightPipes import *
+from OptimLightPipes import *
 
 wavelength=550*nm
 size=2.6*mm

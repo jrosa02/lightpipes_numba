@@ -8,10 +8,10 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from LightPipes import *
+from OptimLightPipes import *
 print(LPversion)
 #Parameters used for the experiment:
-size=11*mm; #The CCD-sensor has an area of size x size (NB LightPipes needs square grids!)
+size=11*mm; #The CCD-sensor has an area of size x size (NB OptimLightPipes needs square grids!)
 wavelength=632.8*nm; #wavelength of the HeNe laser used
 z=2*m; #propagation distance from near to far field
 N_iterations=300 #number of iterations

@@ -1,4 +1,4 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 Field=Begin(60*mm, 1*um, 512)

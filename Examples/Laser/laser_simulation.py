@@ -12,7 +12,7 @@ if sys.version_info[0] < 3:
 else:
     from tkinter import *
     import tkinter as Tk
-from LightPipes import *
+from OptimLightPipes import *
 
 root = Tk.Tk()
 root.wm_title("Laser with stable resonator")

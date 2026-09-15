@@ -1,4 +1,4 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 wavelength=550*nm

@@ -1,7 +1,7 @@
 #! python3
 import numpy as np
 import matplotlib.pyplot as plt
-from LightPipes import *
+from OptimLightPipes import *
 """
     MultiSlit.py
     Demonstrates the RowOfFields command. Two wavelengths are used to show 
@@ -42,7 +42,7 @@ print(F22.lam/nm)
 
 X=np.arange(N)
 X=(X/N-1/2)*size/mm
-s= r'LightPipes for Python,' + '\n' +\
+s= r'OptimLightPipes for Python,' + '\n' +\
   r'MultiSlit.py'+ '\n\n'\
   r'size = {:4.2f} mm'.format(size/mm) + '\n' +\
   r'$\lambda$ = {:4.2f} nm'.format(wavelength/nm) + '\n' +\

@@ -11,10 +11,10 @@ import matplotlib.image as mpimg
 import pickle
 import os
 
-from LightPipes import tictoc
-from LightPipes.units import *
+from OptimLightPipes import tictoc
+from OptimLightPipes.units import *
 
-import LightPipes as lp
+import OptimLightPipes as lp
 
 def is_prime(n):
     """ from
@@ -145,7 +145,7 @@ plt.plot(N_dict_olp['prime'], np.average(results_cpp['prime'], axis=1),'*')
 plt.plot(N_dict_olp['comp'], np.average(results_cpp['comp'], axis=1),'+')
 plt.yscale('log')
 plt.xscale('log')
-plt.title('Comparison of reference LightPipes Cpp vs. new Python implementation')
+plt.title('Comparison of reference OptimLightPipes Cpp vs. new Python implementation')
 plt.xlabel('N')
 plt.ylabel('Time for 1 call to Forvard [s]')
 plt.legend(['Py - power of 2', 'Py - prime', 'Py - composite',

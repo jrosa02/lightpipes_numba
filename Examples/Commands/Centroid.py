@@ -1,4 +1,4 @@
-from LightPipes import *
+from OptimLightPipes import *
 wavelength = 500*nm
 size = 25*mm
 N = 500

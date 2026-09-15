@@ -16,11 +16,11 @@
     
     cc Fred van Goor, May 2020
 """
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import numpy as np
 if LPversion < "2.0.0":
-    print(r'You need to upgrade LightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade LightPipes')
+    print(r'You need to upgrade OptimLightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade OptimLightPipes')
     exit(1)
 
 size=350*um
@@ -90,7 +90,7 @@ axs[0].set_xlabel('x [$\mu{m}$]')
 axs[0].set_ylabel('z/$z_{pitch}$')
 axs[0].set_title('cross section of intensity')
 
-s = r'LightPipes for Python,' + '\n' + 'GRIN_demo.py' + '\n\n'\
+s = r'OptimLightPipes for Python,' + '\n' + 'GRIN_demo.py' + '\n\n'\
     r'SELFOC GRIN lens(https://www.gofoton.com/)' + '\n'\
     r'$\lambda = {:4.1f}$'.format(wavelength/nm) + r' $nm$' + '\n'\
     r'$size = {:4.2f}$'.format(size/um) + r' $\mu{m}$' + '\n'\

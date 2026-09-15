@@ -2,7 +2,7 @@
 Self healing Airy beam. A disk is placed at some distance from the origin.
 This obstacle disturbs the beam, but it heals itself.
 """
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 

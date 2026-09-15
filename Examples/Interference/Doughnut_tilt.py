@@ -8,10 +8,10 @@
     
     cc Fred van Goor, may 2020
 """
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 if LPversion < "2.0.0":
-    print(r'You need to upgrade LightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade LightPipes')
+    print(r'You need to upgrade OptimLightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade OptimLightPipes')
     exit(1)
 
 wavelength=632.8*nm #wavelength of HeNe laser
@@ -44,7 +44,7 @@ s=r'Interference pattern'
 axs[0].imshow(I,cmap='jet'); axs[0].axis('off'); axs[0].set_title(s)
 s=r'Phase distribution'+ '\n' + r'of the doughnut beam.'
 axs[1].imshow(Phi,cmap='jet'); axs[1].axis('off'); axs[1].set_title(s)
-s = r'LightPipes for Python,' + '\n' + 'Doughnut-mode-interference-tilt.py' + '\n\n'\
+s = r'OptimLightPipes for Python,' + '\n' + 'Doughnut-mode-interference-tilt.py' + '\n\n'\
     r'$\lambda = {:4.1f}$'.format(wavelength/nm) + r' $nm$' + '\n'\
     r'$size = {:4.2f}$'.format(size/mm) + r' $mm$' + '\n'\
     r'$N = {:4d}$'.format(N) + '\n'\

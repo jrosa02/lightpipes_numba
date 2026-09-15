@@ -1,4 +1,4 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import sys
 import platform
@@ -29,7 +29,7 @@ ax1.imshow(I,cmap='rainbow')
 
 s=  '\n\nLightPipes for Python demo' + '\n'\
     'Python script of a two-holes interferometer:'+ '\n\n'\
-    'from LightPipes import *'+'\n'\
+    'from OptimLightPipes import *'+'\n'\
     'import matplotlib.pyplot as plt'+'\n'\
     'import sys'+'\n'\
     'import platform'+'\n'\

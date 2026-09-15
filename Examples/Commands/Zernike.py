@@ -5,7 +5,7 @@ This example demonstrates the Zernike command.
     :license: MIT, see License for more details.
 """
 
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 pi=PI

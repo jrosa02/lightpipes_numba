@@ -2,7 +2,7 @@
 Test script for testing the AiryBeam2D command.
 """
 
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -26,7 +26,7 @@ plt.imshow(I,
 plt.title('2D Airy beam')
 plt.xlabel('x [mm]')
 plt.ylabel('y [mm]')
-s = r'LightPipes for Python' + '\n'+ '2D Airy beam' + '\n\n'\
+s = r'OptimLightPipes for Python' + '\n'+ '2D Airy beam' + '\n\n'\
     r'$\lambda = {:4.2f}$'.format(wavelength/um) + r' ${\mu}m$' + '\n'\
     r'$size = {:4.2f}$'.format(size/mm) + r' $mm$' + '\n'\
     r'$N = {:4d}$'.format(N) + '\n'\

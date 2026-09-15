@@ -1,6 +1,6 @@
 #Diffraction from a circular aperture.
 
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 pi=3.1415

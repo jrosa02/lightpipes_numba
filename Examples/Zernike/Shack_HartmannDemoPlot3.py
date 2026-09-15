@@ -1,7 +1,7 @@
 #! python3
 import numpy as np
 import matplotlib.pyplot as plt
-from LightPipes import *
+from OptimLightPipes import *
 """
     Shack_HartmannDemoPlot2.py
     Demonstrates a Shack Hartmann sensor (Plot detailed figure).

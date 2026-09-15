@@ -1,10 +1,10 @@
 #TEST_LightPipes
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import sys
 
 print('Executed with python version: ' + sys.version)
-print('using LightPipes version: ' + LPversion)
+print('using OptimLightPipes version: ' + LPversion)
 #LPhelp()
 #LPdemo()
 #LPtest()

@@ -202,6 +202,19 @@ wheels = [
 ]
 
 [[package]]
+name = "lightpipes"
+version = "2.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "scipy" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b8/32/01caf8d41cf81087255c6907a5c36e922b57fbaf11d19d50b611d003d60f/LightPipes-2.1.5-py3-none-any.whl", hash = "sha256:0943916bf5e57a2197e337098ab8941132ffc706dabe99c7c03b2552fc107810", size = 52045, upload-time = "2024-08-05T12:06:17.979Z" },
+]
+
+[[package]]
 name = "llvmlite"
 version = "0.49.0"
 source = { registry = "https://pypi.org/simple" }
@@ -356,6 +369,7 @@ pyfftw = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "lightpipes" },
     { name = "pytest" },
 ]
 
@@ -371,7 +385,10 @@ requires-dist = [
 provides-extras = ["pyfftw"]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.0" }]
+dev = [
+    { name = "lightpipes", specifier = "==2.1.5" },
+    { name = "pytest", specifier = ">=8.0" },
+]
 
 [[package]]
 name = "packaging"

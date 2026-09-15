@@ -4,7 +4,7 @@ Script to test the new usePyFFTW option to compare pyFFTW and numpy FFT
 """
 import time
 
-from LightPipes import *
+from OptimLightPipes import *
 start_time = time.time()
 
 wavelength = 500*nm

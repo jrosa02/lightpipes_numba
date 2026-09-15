@@ -2,7 +2,7 @@
 """
 Test script: compare analytical and numerical propagation commands.
 """
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 wavelength = 500*nm
@@ -54,7 +54,7 @@ I5n=Intensity(F5n)
 Phi5=Phase(F5)
 Phi5n=Phase(F5n)
 
-s1 = "LightPipes for Python"
+s1 = "OptimLightPipes for Python"
 s2 =r'test_GaussABCD.py' + '\n\n'\
     r'4f relay imaging set up to compare analytical with' + '\n'\
     r' numerical results' + '\n\n'\

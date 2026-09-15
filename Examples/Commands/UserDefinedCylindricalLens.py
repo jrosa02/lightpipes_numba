@@ -1,4 +1,4 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import numpy as np
 """
@@ -29,7 +29,7 @@ ax2 = fig.add_subplot(222)
 ax3 = fig.add_subplot(223)
 ax4 = fig.add_subplot(224)
 
-s = r'LightPipes for Python,' + '\n' + 'UserDefinedCylindricalLens.py' + '\n\n'\
+s = r'OptimLightPipes for Python,' + '\n' + 'UserDefinedCylindricalLens.py' + '\n\n'\
     r'$\lambda = {:4.1f}$'.format(wavelength/nm) + r' $nm$' + '\n'\
     r'$size = {:4.2f}$'.format(size/mm) + r' $mm$' + '\n'\
     r'$N = {:4d}$'.format(N) + '\n'\

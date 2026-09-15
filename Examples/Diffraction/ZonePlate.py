@@ -1,4 +1,4 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import numpy as np
 """
@@ -38,7 +38,7 @@ I2=Intensity(F)
 F=Fresnel(F,q)
 I1=Intensity(F,1)
    
-s1 =    r'LightPipes for Python' + '\n'
+s1 =    r'OptimLightPipes for Python' + '\n'
 s2 =    r'Test-ZonePlate.py'+ '\n\n'\
         f'size = {size/mm:4.2f} mm' + '\n'\
         f'$\\lambda$ = {wavelength/um:4.2f} $\\mu$m' + '\n'\

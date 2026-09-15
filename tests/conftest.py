@@ -1,11 +1,13 @@
 """Differential-testing harness: upstream LightPipes as a live oracle.
 
-`_ref/LightPipes_ref` is a vendored copy of the unmodified upstream package
-(opticspy/lightpipes @ the commit pinned in `_ref/UPSTREAM_COMMIT`), imported
-under a distinct name so it can coexist with the optimized fork in one process.
+The unmodified upstream package is a dev dependency (`LightPipes` on PyPI),
+pinned in pyproject.toml. Our package is named OptimLightPipes, so both import
+side by side in one process with no aliasing.
 
 Every test asserts that the fork reproduces the oracle. The oracle is never
-modified, so a failure always means the fork changed behaviour.
+modified, so a failure always means the fork changed behaviour. A live oracle
+is preferred over frozen fixtures: fixtures captured from a working copy can
+bake in a value that is already wrong.
 """
 import sys
 import pathlib
@@ -14,19 +16,20 @@ import numpy as np
 import pytest
 
 _ROOT = pathlib.Path(__file__).resolve().parent.parent
-_REF_DIR = _ROOT / "_ref"
-
-# Import the oracle first, from its own directory, then the fork from the repo root.
-if str(_REF_DIR) not in sys.path:
-    sys.path.insert(0, str(_REF_DIR))
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-import LightPipes_ref as ref  # noqa: E402
+import LightPipes as ref  # noqa: E402  (upstream, from PyPI)
 import OptimLightPipes as new  # noqa: E402
 
 
-UPSTREAM_COMMIT = (_REF_DIR / "UPSTREAM_COMMIT").read_text().strip()
+# The fork is derived from this upstream release; the oracle must stay on it,
+# so the version is asserted rather than assumed.
+UPSTREAM_VERSION = "2.1.5"
+assert ref.__version__ == UPSTREAM_VERSION, (
+    f"differential tests expect upstream LightPipes {UPSTREAM_VERSION}, "
+    f"got {ref.__version__}; re-pin it in pyproject.toml"
+)
 
 # Optical parameters shared by every test, in SI units.
 WAVELENGTH = 632.8e-9

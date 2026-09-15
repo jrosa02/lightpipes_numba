@@ -3,7 +3,7 @@ Example of a self-healing 1D Airy beam.
 A disk is inserted in the beam. Behind the disk the beam recovers.
 """
 
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -40,7 +40,7 @@ plt.imshow(Ix,
 plt.title('self-healing 1D Airy beam')
 plt.xlabel('x [mm]')
 plt.ylabel('z [cm]')
-s = r'LightPipes for Python' + '\n'+ '1D Airy beam' + '\n\n'\
+s = r'OptimLightPipes for Python' + '\n'+ '1D Airy beam' + '\n\n'\
     r'$\lambda = {:4.2f}$'.format(wavelength/um) + r' ${\mu}m$' + '\n'\
     r'$size = {:4.2f}$'.format(size/mm) + r' $mm$' + '\n'\
     r'$N = {:4d}$'.format(N) + '\n'\

@@ -1,5 +1,5 @@
 import numpy as np
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 # Parameters
@@ -29,7 +29,7 @@ I = Intensity(0, F)
 # Coordinates for plotting
 x = np.linspace(-size/2, size/2, N) / mm
 
-s1 =    r'LightPipes for Python' + '\n'
+s1 =    r'OptimLightPipes for Python' + '\n'
 s2 =    r'Poisson.py'+ '\n\n'\
         f'size = {size/mm:4.2f} mm' + '\n'\
         f'$\\lambda$ = {wavelength/um:4.2f} $\\mu$m' + '\n'\

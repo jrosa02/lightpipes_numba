@@ -1,4 +1,4 @@
-#LightPipes for Python, demonstration of the Steps command
+#OptimLightPipes for Python, demonstration of the Steps command
 #Calcultion of the intensity distribution in the focus of a lens.
 #
 #Date: November 4, 2014
@@ -6,7 +6,7 @@
 #File: Steps.py
 #
 
-from LightPipes import *
+from OptimLightPipes import *
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt

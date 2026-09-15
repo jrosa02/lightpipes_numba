@@ -14,12 +14,12 @@ Created on Sun Apr 19 13:18:33 2020
 import numpy as np
 import matplotlib.pyplot as plt
 
-from LightPipes import tictoc
-from LightPipes.units import * #m, mm, ...
-from LightPipes import plotutils
+from OptimLightPipes import tictoc
+from OptimLightPipes.units import * #m, mm, ...
+from OptimLightPipes import plotutils
 
-import LightPipes as lp
-"""reference LightPipes (Cpp) renamed and installed with "setup.py develop" as
+import OptimLightPipes as lp
+"""reference OptimLightPipes (Cpp) renamed and installed with "setup.py develop" as
 oldLightPipes"""
 import oldLightPipes as olp
 
@@ -44,7 +44,7 @@ X, Z=np.meshgrid(X,Z)
 
 
 def system(lib):
-    """The optical system run by LightPipes library lib."""
+    """The optical system run by OptimLightPipes library lib."""
     Icross=np.zeros((Nsteps,N))
     F = lib.Begin(size, wavelength, N)
     F = lib.CircAperture(R,0,0,F)

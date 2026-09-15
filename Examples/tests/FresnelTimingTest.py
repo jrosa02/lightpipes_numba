@@ -8,11 +8,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-from LightPipes import tictoc
-from LightPipes.units import *
+from OptimLightPipes import tictoc
+from OptimLightPipes.units import *
 
-import LightPipes as lp
-"""reference LightPipes (Cpp) renamed and installed with "setup.py develop" as
+import OptimLightPipes as lp
+"""reference OptimLightPipes (Cpp) renamed and installed with "setup.py develop" as
 oldLightPipes"""
 import oldLightPipes as olp
 
@@ -177,7 +177,7 @@ plt.scatter(N_dict['comp'], np.average(results_py['comp'], axis=1),
 plt.yscale('log')
 plt.xscale('log')
 # plt.scatter(N_list, np.average(results_cpp, axis=1))
-# plt.title('Comparison of reference LightPipes Cpp vs. new Python implementation')
+# plt.title('Comparison of reference OptimLightPipes Cpp vs. new Python implementation')
 plt.xlabel('N')
 plt.ylabel('Time for 1 call to Fresnel [s]')
 plt.legend(['power of 2', 'prime', 'composite'])

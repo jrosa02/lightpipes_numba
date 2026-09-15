@@ -12,12 +12,12 @@ Created on Fri Apr 10 17:37:42 2020
 import numpy as np
 import matplotlib.pyplot as plt
 
-from LightPipes import tictoc
-from LightPipes.units import * #m, mm, ...
-from LightPipes import plotutils
+from OptimLightPipes import tictoc
+from OptimLightPipes.units import * #m, mm, ...
+from OptimLightPipes import plotutils
 
-import LightPipes as lp
-"""reference LightPipes (Cpp) renamed and installed with "setup.py develop" as
+import OptimLightPipes as lp
+"""reference OptimLightPipes (Cpp) renamed and installed with "setup.py develop" as
 oldLightPipes"""
 import oldLightPipes as olp
 
@@ -38,7 +38,7 @@ shift_x = -1*mm
 shift_y = -3*mm
 
 def system(lib):
-    """The optical system run by LightPipes library lib."""
+    """The optical system run by OptimLightPipes library lib."""
     F = lib.Begin(size, wavelength, N)
     F = lib.RectAperture(w, w, 0, 0, 0, F)
     F = lib.Fresnel(z, F)

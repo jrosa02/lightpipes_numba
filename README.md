@@ -1,3 +1,81 @@
+# OptimLightPipes
+
+**LightPipes accelerated with numba and pyFFTW.**
+
+A drop-in fork of [opticspy/lightpipes](https://github.com/opticspy/lightpipes) 7.1.1.
+The API is unchanged — replace `from LightPipes import *` with
+`from OptimLightPipes import *`.
+
+## Speedups
+
+Measured against unmodified upstream (12 threads, TBB, complex128). `rel.diff`
+is the largest relative difference from the upstream result.
+
+| routine | N | speedup | rel.diff |
+|---|---|---|---|
+| `Forward` | 32 → 128 | **90x – 2348x** | 7e-15 |
+| `PhaseUnwrap` | 128 – 512 | **135x – 154x** | 0 (bit-identical) |
+| `Steps(save_ram=True)` | 128 – 512 | **38x – 51x** | 6e-15 |
+| `ZernikeFit` | 128 – 512 | **3.7x – 5.5x** | 0 |
+| `Steps(save_ram=False)` | 128 – 512 | 2.1x – 3.7x | 5e-15 |
+| `Interpol` | 256 – 1024 | 1.8x – 2.4x | 4e-16 |
+| `Forvard` | 256 – 1024 | 1.5x – 2.0x | 6e-16 |
+| `Fresnel` | 256 – 1024 | 1.1x – 2.0x | 4e-16 |
+
+Reproduce with `uv run python benchmarks/bench.py`.
+
+`Forward`'s win is mostly algebra rather than JIT: its 17 outer products per
+output pixel collapse to a rank-1 separable product, so the double sum
+factorizes and the routine drops from O(N⁴) to O(N³).
+
+`Fresnel` is FFT-bound — about 82% of its runtime at N=1024 is its three
+2N×2N transforms, which numba cannot accelerate — so pyFFTW, not numba, is
+what moves it.
+
+## How it works
+
+- **numba `@guvectorize(target='parallel')`** for the compute kernels.
+  Parallelism is the gufunc *broadcast axis*: each kernel's core signature
+  describes one row/column/pixel, and the independent instances run across
+  threads. `PhaseUnwrap` is compiled serially — its expanding-shell walk is
+  genuinely sequential.
+- **pyFFTW** as the default FFT backend when installed, with its plan cache
+  enabled (upstream imported the interfaces but never enabled it, so every
+  call re-planned).
+
+## Controls
+
+```python
+import OptimLightPipes as lp
+
+lp.warmup()                    # compile/load kernels up front
+lp.set_num_threads(8)          # numba kernel threads
+lp.set_fft_backend('numpy')    # opt out of pyFFTW at runtime
+lp.set_fft_threads(4)          # FFT threads, sized independently
+```
+
+`fastmath` is **off** by default (`config._FASTMATH`) so results track
+upstream; enable it to trade a little accuracy for speed.
+
+## Testing
+
+Correctness is checked differentially against unmodified upstream
+`LightPipes` (a pinned dev dependency), used as a live oracle rather than a
+set of frozen fixtures — fixtures captured from a working copy can bake in a
+value that is already wrong. Both packages import side by side, since this
+one is named `OptimLightPipes`.
+
+```bash
+uv sync                                   # installs the oracle into the dev group
+uv run pytest tests/                      # 81 tests, both dtypes
+NUMBA_DISABLE_JIT=1 uv run pytest tests/  # numpy fallback path
+```
+
+Upstream is a **dev** dependency only — installing this package does not pull
+it in.
+
+---
+
 # LightPipes
 
 **Simulations of optical phenomena where diffraction is essential**

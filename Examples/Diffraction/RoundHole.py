@@ -1,4 +1,4 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import numpy as np
 wavelength=1*um
@@ -16,7 +16,7 @@ F=Lens(F,f)
 F=Forvard(f,F)
 I=Intensity(0,F)
 
-s1 =    r'LightPipes for Python' + '\n'
+s1 =    r'OptimLightPipes for Python' + '\n'
 s2 =    r'RoundHole.py'+ '\n\n'\
         f'size = {size/mm:4.2f} mm' + '\n'\
         f'$\\lambda$ = {wavelength/um:4.2f} $\\mu$m' + '\n'\

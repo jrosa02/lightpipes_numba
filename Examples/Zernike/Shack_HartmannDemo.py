@@ -1,7 +1,7 @@
 #! python3
 import numpy as np
 import matplotlib.pyplot as plt
-from LightPipes import *
+from OptimLightPipes import *
 """
     Shack_HartmannDemo.py
     Demonstrates a Shack Hartmann sensor.
@@ -41,7 +41,7 @@ F2=Zernike(F, 2, 0, size/2, 3, norm='True', units='lam'); S=ZernikeName(4) # Def
 F2=Fresnel(F2,f)
 Iscreen2=Intensity(F2,1)
 
-s= r'LightPipes for Python,' + '\n' +\
+s= r'OptimLightPipes for Python,' + '\n' +\
   r'Shack_HartmannDemo.py'+ '\n\n'\
   r'size = {:4.2f} mm'.format(size/mm) + '\n' +\
   r'$\lambda$ = {:4.2f} nm'.format(wavelength/nm) + '\n' +\

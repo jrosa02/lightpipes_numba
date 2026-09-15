@@ -1,10 +1,10 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-#import LightPipes as lp
-import LightPipes.plotutils as lpplot
-from LightPipes import tictoc
+#import OptimLightPipes as lp
+import OptimLightPipes.plotutils as lpplot
+from OptimLightPipes import tictoc
 
 """
     Young's experiment.

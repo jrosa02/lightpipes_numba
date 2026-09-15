@@ -1,7 +1,7 @@
 #! python3
 import numpy as np
 import matplotlib.pyplot as plt
-from LightPipes import *
+from OptimLightPipes import *
 """
     MultiHole.py
     Demonstrates the MultiHole command. Two wavelengths are used to show 
@@ -34,7 +34,7 @@ F=Lens(F,z)
 F=Fresnel(F,z)
 Iscreen=Intensity(F)
 
-s= r'LightPipes for Python,' + '\n' +\
+s= r'OptimLightPipes for Python,' + '\n' +\
   r'MultiHole.py'+ '\n\n'\
   r'size = {:4.2f} mm'.format(size/mm) + '\n' +\
   r'$\lambda$ = {:4.2f} nm'.format(wavelength/nm) + '\n' +\

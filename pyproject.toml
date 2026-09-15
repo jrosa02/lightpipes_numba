@@ -18,6 +18,10 @@ pyfftw = ["pyfftw"]
 [dependency-groups]
 dev = [
     "pytest>=8.0",
+    # Unmodified upstream, used as the oracle for the differential tests in
+    # tests/. Pinned exactly: the tests assert this version, since a different
+    # upstream release would change what "correct" means.
+    "lightpipes==2.1.5",
 ]
 
 [tool.pytest.ini_options]

@@ -2,7 +2,7 @@
 Test script for testing the AiryBeam command.
 """
 
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 wavelength = 1500*nm

@@ -28,7 +28,7 @@ else:
     from tkinter import *
     import tkinter as Tk
     from tkinter import messagebox
-from LightPipes import *
+from OptimLightPipes import *
 import math
 
 root = Tk.Tk()

@@ -15,11 +15,10 @@ import time
 import numpy as np
 
 _ROOT = pathlib.Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(_ROOT / "_ref"))
 sys.path.insert(0, str(_ROOT))
 
 import OptimLightPipes as new  # noqa: E402
-import LightPipes_ref as ref  # noqa: E402
+import LightPipes as ref  # noqa: E402  (unmodified upstream, from PyPI)
 
 LAM = 632.8e-9
 SIZE = 5.0e-3

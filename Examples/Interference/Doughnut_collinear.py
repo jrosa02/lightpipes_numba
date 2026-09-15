@@ -8,11 +8,11 @@
     
     cc Fred van Goor, May 2020.
 """
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 if LPversion < "2.0.0":
-    print(r'You need to upgrade LightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade LightPipes')
+    print(r'You need to upgrade OptimLightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade OptimLightPipes')
     exit(1)
 
 wavelength=632.8*nm #wavelength of HeNe laser
@@ -48,7 +48,7 @@ for i in range(23):
     s=r'$z/\lambda = $' + r'{:4.2f}'.format(i*dz/wavelength)
     axs[i].imshow(I,cmap='jet'); axs[i].axis('off'); axs[i].set_title(s)
 
-s = r'LightPipes for Python,' + '\n' + 'Doughnut-mode-interference-collinear.py'+ '\n\n'\
+s = r'OptimLightPipes for Python,' + '\n' + 'Doughnut-mode-interference-collinear.py'+ '\n\n'\
     r'$\lambda = {:4.1f}$'.format(wavelength/nm) + r' $nm$' + '\n'\
     r'$size = {:4.2f}$'.format(size/mm) + r' $mm$' + '\n'\
     r'$N = {:4d}$'.format(N) + '\n'\

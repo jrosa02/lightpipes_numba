@@ -12,11 +12,11 @@ Created on Mon Apr  6 22:38:34 2020
 import numpy as np
 import matplotlib.pyplot as plt
 
-from LightPipes import tictoc
-from LightPipes.units import * #m, mm, ...
+from OptimLightPipes import tictoc
+from OptimLightPipes.units import * #m, mm, ...
 
-import LightPipes as lp
-"""reference LightPipes (Cpp) renamed and installed with "setup.py develop" as
+import OptimLightPipes as lp
+"""reference OptimLightPipes (Cpp) renamed and installed with "setup.py develop" as
 oldLightPipes"""
 import oldLightPipes as olp
 

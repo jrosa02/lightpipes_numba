@@ -1,8 +1,8 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import numpy as np
 """
-    LightPipes for Python
+    OptimLightPipes for Python
     *********************
     
     LaserModeTransformer.py
@@ -64,7 +64,7 @@ F=Lens(F,f5) # lens f5
 F=Forvard(F,200*mm) # propagate to have sufficient large beam size
 I1=Intensity(F) #intensity output beam
 
-s1 =    r'LightPipes for Python,' + '\n'\
+s1 =    r'OptimLightPipes for Python,' + '\n'\
         r'LaserModeTransformer.py'+ '\n\n'\
         f'size = {size/mm:4.2f} mm' + '\n'\
         f'$\\lambda$ = {labda/nm:4.2f} nm' + '\n'\

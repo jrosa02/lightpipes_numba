@@ -6,7 +6,7 @@ Only a 'bare-bone' model, so no propagation and diffraction, is considered.
     :license: MIT, see License for more details.
 """
 
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import math
 

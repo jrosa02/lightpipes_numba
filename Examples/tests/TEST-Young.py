@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from PyLightPipes import *
 #help(LPdemo)
 #LPdemo()
-#print('using LightPipes version: ' + LPversion)
+#print('using OptimLightPipes version: ' + LPversion)
 LPtest()
 
 wavelength=20*um

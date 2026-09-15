@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 wavelength=632.8*nm #wavelength of HeNe laser

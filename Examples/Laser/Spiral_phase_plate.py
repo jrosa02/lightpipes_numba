@@ -6,11 +6,11 @@ Spiral_phase_plate.py
     
     cc Fred van Goor, May 2020.
 """
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 if LPversion < "2.0.0":
-    print(r'You need to upgrade LightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade LightPipes')
+    print(r'You need to upgrade OptimLightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade OptimLightPipes')
     exit(1)
 
 wavelength = 500*nm
@@ -28,7 +28,7 @@ phase=Phase(F,unwrap=True)
 F=Fresnel(z,F)
 I=Intensity(0,F)
 
-s = r'LightPipes for Python,' + '\n'+ 'Spiral_phase_plate.py' + '\n\n'\
+s = r'OptimLightPipes for Python,' + '\n'+ 'Spiral_phase_plate.py' + '\n\n'\
     r'$\lambda = {:4.2f}$'.format(wavelength/nm) + r' $nm$' + '\n'\
     r'$size = {:4.2f}$'.format(size/mm) + r' $mm$' + '\n'\
     r'$N = {:4d}$'.format(N) + '\n'\

@@ -2,7 +2,7 @@
 """
 Script to test the Begin command with dtype option.
 """
-from LightPipes import *
+from OptimLightPipes import *
 import numpy as np
 import sys
 
@@ -12,7 +12,7 @@ N = 3000
 N2=int(N/2)
 w0=2*mm
 
-print("LightPipes version = ", LPversion)
+print("OptimLightPipes version = ", LPversion)
 print("without dtype option:")
 F=Begin(size,wavelength,N)
 print("type of F:",F._dtype)

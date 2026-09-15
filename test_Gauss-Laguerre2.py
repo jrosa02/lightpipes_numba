@@ -7,10 +7,10 @@ Gauss_laser_mode.py
     
     cc Fred van Goor, August 2023.
 """
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 if LPversion < "2.0.0":
-    print(r'You need to upgrade LightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade LightPipes')
+    print(r'You need to upgrade OptimLightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade OptimLightPipes')
     exit(1)
 
 wavelength = 500*nm

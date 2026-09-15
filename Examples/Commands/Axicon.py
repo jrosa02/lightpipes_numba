@@ -1,6 +1,6 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
-from LightPipes import cm, m, mm, nm, um
+from OptimLightPipes import cm, m, mm, nm, um
 
 Pi=3.1415
 deg=Pi/180.0

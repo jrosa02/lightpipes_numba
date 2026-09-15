@@ -1,4 +1,4 @@
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -15,7 +15,7 @@ F=CircScreen(F,d/2)
 F=Fresnel(F,z)
 I=Intensity(F,1)
 
-s1 =    r'LightPipes for Python' + '\n'
+s1 =    r'OptimLightPipes for Python' + '\n'
 s2 =    r'Poisson.py'+ '\n\n'\
         f'size = {size/mm:4.2f} mm' + '\n'\
         f'$\\lambda$ = {wavelength/um:4.2f} $\\mu$m' + '\n'\

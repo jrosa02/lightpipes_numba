@@ -27,7 +27,7 @@ Test script: test GaussLaguerre(Fin, w0, p = 0, l = 0, A = 1.0, sincos = 1 )comm
     :param sincos: 0 = exp, 1 = cos, 2 = sin (default = 1)
     :type sincos: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F = GaussLaguerre(F, 3*mm) # Fundamental Gauss mode, LG0,0 with a beam radius of 3 mm
@@ -44,7 +44,7 @@ Test script: test GaussLaguerre(Fin, w0, p = 0, l = 0, A = 1.0, sincos = 1 )comm
         A. Siegman, "Lasers", p. 642
 """
 
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 
 wavelength = 500*nm
@@ -66,7 +66,7 @@ I1=Intensity(F1)
 Phi0=Phase(F0)
 Phi1=Phase(F1)
 
-s1 = "LightPipes for Python"
+s1 = "OptimLightPipes for Python"
 s2 =r'test_GaussLaguerre.py' + '\n\n'\
     f'p={p} l ={l}\n'\
     f'ecs={ecs}\n'\

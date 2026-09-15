@@ -2,5 +2,5 @@
 """
 Script to test the LPtest() command.
 """
-from LightPipes import *
+from OptimLightPipes import *
 LPtest()

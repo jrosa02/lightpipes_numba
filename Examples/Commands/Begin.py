@@ -1,11 +1,11 @@
-from LightPipes import *
+from OptimLightPipes import *
 
 GridSize = 30*mm
 GridDimension = 5
 lambda_ = 500*nm #lambda_ is used because lambda is a Python build-in function.
 
 Field = Begin(GridSize, lambda_, GridDimension)
-print("LightPipes version = ", LPversion)
+print("OptimLightPipes version = ", LPversion)
 if LPversion < "2.0.0":
     print(Field)
 else:

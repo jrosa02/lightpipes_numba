@@ -5,7 +5,7 @@ This example demonstrates the Zernike command.
     :license: MIT, see License for more details.
 """
 
-from LightPipes import *
+from OptimLightPipes import *
 import matplotlib.pyplot as plt
 wavelength=500*nm
 size=20.0*mm

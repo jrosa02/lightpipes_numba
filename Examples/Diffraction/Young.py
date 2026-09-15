@@ -1,7 +1,7 @@
 #Interference from two holes.
 import matplotlib.pyplot as plt
 
-from LightPipes import *
+from OptimLightPipes import *
 
 wavelength=20*um
 size=30.0*mm
