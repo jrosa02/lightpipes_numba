@@ -92,7 +92,7 @@ else:  # pragma: no cover - fallback path
 
             def caller(*args, **kw):
                 raise RuntimeError(
-                    "LightPipes numba kernels require numba when called via the "
+                    "OptimLightPipes numba kernels require numba when called via the "
                     "gufunc path; install numba or use the numpy code path."
                 )
 

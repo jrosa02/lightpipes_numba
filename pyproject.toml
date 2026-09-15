@@ -1,5 +1,5 @@
 [project]
-name = "lightpipes-numba"
+name = "optimlightpipes"
 version = "0.1.0"
 description = "LightPipes accelerated with numba guvectorize kernels"
 readme = "README.md"
@@ -9,6 +9,7 @@ dependencies = [
     "numpy>=2.0",
     "scipy>=1.11",
     "matplotlib>=3.8",
+    "pyfftw>=0.15.1",
 ]
 
 [project.optional-dependencies]
@@ -25,4 +26,4 @@ dev = [
 testpaths = ["tests"]
 
 [tool.setuptools]
-packages = ["LightPipes"]
+packages = ["OptimLightPipes"]

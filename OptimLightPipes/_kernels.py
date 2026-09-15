@@ -1,4 +1,4 @@
-"""Compiled kernels for the LightPipes hot paths.
+"""Compiled kernels for the OptimLightPipes hot paths.
 
 Parallelism is expressed as a gufunc *broadcast axis*: each kernel's core
 signature describes the work for one row / column / output pixel, and numba's
@@ -168,6 +168,37 @@ def _forward_col(field, dA_i, dA_j, out):
         for j in range(m):
             acc += dA_j[jn, j] * G[j]
         out[jn] = 0.5j * acc
+
+
+# ---------------------------------------------------------------------------
+# Forvard(): spectral transfer function
+# ---------------------------------------------------------------------------
+# Upstream builds SSW, Bus, Ir, Abus, Cab, Sab and CC as separate N x N
+# temporaries. One elementwise gufunc over the grid produces CC directly and
+# applies the fftshift sign pattern, reading two length-N vectors instead.
+
+@guvectorize(
+    ['void(float64[:], float64[:], float64, float64, complex128[:])'],
+    '(),(),(),()->()')
+def _forvard_CC(sw_row, sw_col, z1, two_pi, out):
+    """CC = exp(1j*Abus) for one grid point, from the separable frequency grid."""
+    bus = z1 * (sw_row[0] + sw_col[0])
+    ir = np.trunc(bus)  # truncate, not round (matches Bus.astype(int))
+    abus = two_pi * (ir - bus)  # clipped to [-2pi, 0]
+    out[0] = complex(np.cos(abus), np.sin(abus))
+
+
+def forvard_CC(N, size, z1, two_pi):
+    """Spectral transfer function CC, shape (N, N).
+
+    `two_pi` is passed in rather than using np.pi: Forvard runs in legacy mode
+    with 2*3.141592654 to stay comparable with the original C++ version.
+    """
+    No2 = int(N / 2)
+    SW = np.arange(-No2, N - No2) / size
+    SW *= SW
+    return _forvard_CC(SW.reshape((-1, 1)), SW.reshape((1, -1)),
+                       float(z1), float(two_pi))
 
 
 # ---------------------------------------------------------------------------

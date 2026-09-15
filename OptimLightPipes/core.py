@@ -33,7 +33,7 @@ def BeamMix(Fin1, Fin2):
     :param Fin2: Second field
     :param Fin2: Field
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F = BeamMix(F1 , F2)
@@ -63,7 +63,7 @@ def Centroid(Fin):
     
     .. code-block::
     
-        from LightPipes import *
+        from OptimLightPipes import *
         wavelength = 500*nm
         size = 25*mm
         N = 500
@@ -105,7 +105,7 @@ def D4sigma(Fin):
     
     .. code-block::
     
-        from LightPipes import *
+        from OptimLightPipes import *
         wavelength = 500*nm
         size = 25*mm
         N = 500
@@ -145,7 +145,7 @@ def CircAperture(Fin, R, x_shift = 0.0, y_shift = 0.0):
     :param Fin: input field
     :type Fin: Field
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = CircAperture(F, 3*mm) # A 3 mm radius circular aperture in the center of the grid.
@@ -189,7 +189,7 @@ def CircScreen(Fin, R, x_shift=0.0, y_shift=0.0):
     :type x_shift: int, float
     :type y_shift: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = CircScreen(F, 3*mm) # A 3 mm radius circular screen in the center of the grid.
@@ -238,7 +238,7 @@ def GaussAperture(Fin, w, x_shift = 0.0, y_shift = 0.0, T = 1.0, ):
     :param T: center intensity transmission (default = 1.0)
     :type T: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F = GaussAperture(Fin, w) # centered, T=1.0, width = w
@@ -282,7 +282,7 @@ def SuperGaussAperture(Fin, w, n = 2.0, x_shift = 0.0, y_shift = 0.0, T = 1.0  )
     :param T: center intensity transmission (default = 1.0)
     :type T: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F = SuperGaussAperture(Fin, w) # centered, T=1.0, width = w, power = 2.0
@@ -325,7 +325,7 @@ def GaussScreen(Fin, w, x_shift = 0.0, y_shift = 0.0, T = 0.0 ):
     :param T: center intensity transmission (default = 0.0)
     :type T: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F = GaussAperture(Fin, w) # centered, T=1.0, width = w
@@ -365,7 +365,7 @@ def GaussHermite(Fin, w0, m = 0, n = 0, A = 1.0):
     :param A: amplitude (default = 1.0)
     :type A: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F = GaussHermite(F, 3*mm) # Fundamental Gauss mode, HG0,0 with a beam radius of 3 mm
@@ -442,7 +442,7 @@ def GaussLaguerre(Fin, w0, p = 0, l = 0, A = 1.0, ecs = 1 ):
     :param ecs: 0 = exp, 1 = cos, 2 = sin (default = 1)
     :type ecs: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F = GaussLaguerre(F, 3*mm) # Fundamental Gauss mode, LG0,0 with a beam radius of 3 mm
@@ -530,7 +530,7 @@ def IntAttenuator(Fin, att = 0.5 ):
     :param att: intensity attenuation factor (default = 0.5)
     :type att: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F = IntAttenuator(F) # attenuates the intensity of the field with a factor 0.5
@@ -600,7 +600,7 @@ def Interpol(Fin, new_size, new_N, x_shift = 0.0, y_shift = 0.0, angle = 0.0, ma
     :type angle: int, float
     :param magnif: magnification of the field amplitude (default = 1.0)
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F = Interpol(F, 50*mm, 200) # interpolates the field to a grid size of 50 mm and a grid dimension of 200
@@ -694,7 +694,7 @@ def MultIntensity( Fin, Intens):
     :param Intens: N x N square array of real numbers or scalar
     :type Intens: numpy.ndarray, float, int
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> import numpy as np
@@ -727,7 +727,7 @@ def MultPhase( Fin, Phi):
     :param Phi: N x N square array of real numbers or scalar
     :type Phi: numpy.ndarray, int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> # multiply with a phase distribution:
@@ -766,7 +766,7 @@ def Normal(Fin):
     :param Fin: input field
     :type Fin: Field
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = Normal(F)
@@ -842,7 +842,7 @@ def PhaseSpiral(Fin, m = 1):
     :param m: Order of the spiral (default = 1)
     :type m: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> order = 2
@@ -903,7 +903,7 @@ def RandomIntensity(Fin, seed = 123, noise = 1.0, ):
     :param noise: level of the noise (default = 1.0)
     :type noise: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = RandomIntensity(F) # adds noise to the field
@@ -936,7 +936,7 @@ def RandomPhase(Fin, seed =456, maxPhase = _np.pi ):
     :param maxPhase: max value of the phase (default = 3.1415 (pi))
     :type maxPhase: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = RandomPhase(F) # adds noise to the phase of the field
@@ -975,7 +975,7 @@ def RectAperture(Fin, sx, sy, x_shift = 0.0, y_shift = 0.0, angle = 0.0 ):
     :param angle: rotation angle in degrees (default = 0.0)
     :type angle: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = RectAperture(F, 3*mm, 4*mm) # A 3 x 4 mm rectangular aperture in the center of the grid.
@@ -1021,7 +1021,7 @@ def RectScreen(Fin, sx, sy, x_shift = 0.0, y_shift = 0.0, angle = 0.0 ):
     :param angle: rotation angle in degrees (default = 0.0)
     :type angle: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = RectScreen(F, 3*mm, 4*mm) # A 3 x 4 mm rectangular screen in the center of the grid.
@@ -1083,7 +1083,7 @@ def SubIntensity(Fin, Intens ):
     :param Intens: N x N square array of real numbers or scalar
     :type Intens: numpy.ndarray, int, float    
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     .. seealso::
@@ -1108,7 +1108,7 @@ def SubPhase( Fin, Phi):
     :param Phi: N x N square array of real numbers or scalar
     :type Phi: numpy.ndarray, int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     .. seealso::

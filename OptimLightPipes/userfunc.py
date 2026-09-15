@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-User defined functions for LightPipes for Python
+User defined functions for OptimLightPipes for Python
 
 """
 import numpy as _np
@@ -23,7 +23,7 @@ def RowOfFields(Fin,Ffield,Nfields,sep,y=0.0):
     :param y: position of the row in the y-direction (Default = 0.0)
     :type y: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> #Insert a row of fields or numpy arrays in the input field at y (Default=0.0):    
@@ -92,7 +92,7 @@ def FieldArray2D(Fin,Ffield,Nfieldsx,Nfieldsy,x_sep,y_sep):
     :param y_sep: separation of the inserted fields in the y-direction
     :type y_sep: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> #Insert an array of lenses in the field    
@@ -146,7 +146,7 @@ def CylindricalLens(Fin,f,x_shift=0.0,y_shift=0.0,angle=0.0):
     :param angle: rotation angle (default = 0.0, horizontal)
     :type angle: int, float    
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> F=Begin(size,wavelength,N)

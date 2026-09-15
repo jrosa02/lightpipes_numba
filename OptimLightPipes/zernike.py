@@ -47,7 +47,7 @@ def Zernike(Fin, n, m, R, A = 1.0, norm=True, units='opd'):
                 'rad': A given in multiples of 2pi
     :type units: string
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
         if norm=True and Aunit='lambda' and A=1.0, the wavefront
         will have an rms error of 1lambda, but PtV depending on n/m.
@@ -178,7 +178,7 @@ def ZernikeFilter(F, j_terms, R):
     :type j_terms: float, int
     :param R: radius of Zernike definition
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     
     """
     j_terms, A_fits = ZernikeFit(j_terms, R, F, norm=True, units='rad')

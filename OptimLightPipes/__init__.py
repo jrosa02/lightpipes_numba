@@ -62,6 +62,11 @@ __all__ = [
     'set_num_threads',
     'get_num_threads',
     'HAVE_NUMBA',
+    'set_fft_backend',
+    'get_fft_backend',
+    'set_fft_threads',
+    'get_fft_threads',
+    'have_pyfftw',
 ]
 
 #User defined functions from userfunc.py:
@@ -114,6 +119,8 @@ from .core import Interpol
 from .sources import AiryBeam1D, AiryBeam2D, PointSource, GaussBeam, PlaneWave
 from .userfunc import ZonePlate, CylindricalLens, RowOfFields, FieldArray2D
 from ._numba_compat import (HAVE_NUMBA, get_num_threads, set_num_threads)
+from ._fft import (set_fft_backend, get_fft_backend, set_fft_threads,
+                   get_fft_threads, have_pyfftw)
 
 
 def warmup(N=32):
@@ -127,7 +134,7 @@ def warmup(N=32):
     :param N: grid dimension used for the dummy calls (default = 32)
     :type N: int
 
-    >>> import LightPipes; LightPipes.warmup()
+    >>> import OptimLightPipes; OptimLightPipes.warmup()
     """
     import numpy as _np
     for dtype in (_np.complex128, _np.complex64):
@@ -154,16 +161,16 @@ def Begin(size,labda,N,dtype=None):
     :param dtype: type of the field array
     :type dtype: complex, numpy.complex64, numpy.complex128 (default = None)
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
-    >>> from LightPipes import *
+    >>> from OptimLightPipes import *
     >>> size = 20*mm
     >>> wavelength = 500*nm
     >>> N = 5
     >>> F = Begin(size, wavelength, N)
     >>> F
-    <LightPipes.field.Field object at 0x0000027AAF6E5908>
+    <OptimLightPipes.field.Field object at 0x0000027AAF6E5908>
     >>> F.field
     array([[1.+0.j, 1.+0.j, 1.+0.j, 1.+0.j, 1.+0.j],
            [1.+0.j, 1.+0.j, 1.+0.j, 1.+0.j, 1.+0.j],
@@ -189,9 +196,9 @@ def Begin(size,labda,N,dtype=None):
 
 def LPtest():
     """
-    *Performs a test to check if the installation of the LightPipes package was successful.*
+    *Performs a test to check if the installation of the OptimLightPipes package was successful.*
     
-    :return: "LightPipes for Python: test passed." if successful, "Test failed" if not.
+    :return: "OptimLightPipes for Python: test passed." if successful, "Test failed" if not.
     :rtype: string
     
     """
@@ -202,14 +209,14 @@ def LPtest():
     S=np.sum(I)
     Sa=16.893173606654138
     if math.isclose(S, Sa):
-        print('LightPipes for Python: test passed.')
-        print("LightPipes version:",LPversion)
+        print('OptimLightPipes for Python: test passed.')
+        print("OptimLightPipes version:",LPversion)
     else:
         print('Test failed')
 
 def LPhelp():
     """
-    *Go to the LightPipes documentation website on:* `https://opticspy.github.io/lightpipes/ <https://opticspy.github.io/lightpipes/>`_
+    *Go to the OptimLightPipes documentation website on:* `https://opticspy.github.io/lightpipes/ <https://opticspy.github.io/lightpipes/>`_
 
     """
     webbrowser.open_new("https://opticspy.github.io/lightpipes/")
@@ -245,7 +252,7 @@ def LPdemo():
         '\n\nLightPipes for Python demo\n\n'
         'Python script of a two-holes interferometer:\n\n'
         '   import matplotlib.pyplot as plt\n'
-        '   from LightPipes import *\n'
+        '   from OptimLightPipes import *\n'
         '   wavelength=20*um\n'
         '   size=30.0*mm\n'
         '   N=500\n'

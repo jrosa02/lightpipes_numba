@@ -18,7 +18,7 @@ _ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_ROOT / "_ref"))
 sys.path.insert(0, str(_ROOT))
 
-import LightPipes as new  # noqa: E402
+import OptimLightPipes as new  # noqa: E402
 import LightPipes_ref as ref  # noqa: E402
 
 LAM = 632.8e-9
@@ -107,7 +107,9 @@ def main():
 
     override = [int(s) for s in args.sizes.split(",") if s] or None
 
-    print(f"numba={new.HAVE_NUMBA}  threads={new.get_num_threads()}")
+    print(f"numba={new.HAVE_NUMBA}  threads={new.get_num_threads()}  "
+          f"fft={new.get_fft_backend()} x{new.get_fft_threads()}")
+    print("(upstream column uses its own defaults: numpy.fft, no plan cache)")
     print("warming up kernels...")
     new.warmup()
     print()
@@ -122,7 +124,11 @@ def main():
             continue
         sizes, fn = ROUTINES[name]
         for N in override or sizes:
-            fn(new, N)  # ensure compiled before timing
+            # Warm both sides: numba compiles on first call, and pyFFTW builds
+            # (and caches) an FFT plan per shape. Timing either one-off cost
+            # would measure setup rather than the steady-state routine.
+            fn(new, N)
+            fn(ref, N)
             t_new, r_new = _time(lambda: fn(new, N), args.repeat)
             t_ref, r_ref = _time(lambda: fn(ref, N), args.repeat)
             print(f"{name:<16}{N:>6}{t_ref:>10.4f}s{t_new:>10.4f}s"

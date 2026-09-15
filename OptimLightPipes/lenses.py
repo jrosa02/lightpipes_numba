@@ -22,7 +22,7 @@ def Axicon(Fin, phi, n1 = 1.5, x_shift = 0.0, y_shift = 0.0 ):
     :param y_shift: shift in y direction (default = 0.0)
     :type y_shift: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> phi=179.7/180*3.1415
@@ -54,7 +54,7 @@ def Convert(Fin):
     :param Fin: input field
     :type Fin: Field
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = Convert(F) # convert to normal coordinates
@@ -96,7 +96,7 @@ def GLens(Fin, f):
     :param f: focal length of the lens
     :type f: int, float
     :return: output field (N x N square array of complex numbers, pure Gauss).
-    :rtype: LightPipes.field.Field
+    :rtype: OptimLightPipes.field.Field
     
     :Example:
     
@@ -132,7 +132,7 @@ def Lens(Fin, f, x_shift = 0.0, y_shift = 0.0):
     :param y_shift: shift in y direction (default = 0.0)
     :type y_shift: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = Lens(F, 50*mm) # propagate through lens with focal length of 50 mm
@@ -176,7 +176,7 @@ def LensFarfield(Fin, f ):
     :param f: focal length of the lens
     :type f: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
 
 
         The focus(="far field") is related to the nearfield phase and intensity
@@ -225,7 +225,7 @@ def LensForvard(Fin, f, z ):
     :param z: propagation distance
     :type z: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = LensForvard(F, 100*mm, 20*cm) # propagate 20 cm with spherical coordinates given by the focal length of 100 mm
@@ -285,7 +285,7 @@ def LensFresnel(Fin, f, z ):
     :param z: propagation distance
     :type z: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = LensFresnel(F, 100*mm, 20*cm) # propagate 20 cm with spherical coordinates given by the focal length of 100 mm

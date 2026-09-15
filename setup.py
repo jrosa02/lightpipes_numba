@@ -3,16 +3,16 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-exec(open('./LightPipes/_version.py').read())
+exec(open('./OptimLightPipes/_version.py').read())
 
 setuptools.setup(
-    name='LightPipes',
-    packages=['LightPipes'],
+    name='OptimLightPipes',
+    packages=['OptimLightPipes'],
     #install_requires = ['numpy', 'pyFFTW', 'scipy'],
     install_requires = ['numpy', 'scipy', 'matplotlib'],
     extras_require = {'pyfftw':[ 'pyfftw']},
     version = __version__,
-    description='LightPipes for Python optical toolbox',
+    description='OptimLightPipes: LightPipes accelerated with numba and pyFFTW',
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Fred van Goor',

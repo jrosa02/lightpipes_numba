@@ -18,12 +18,12 @@ def AiryBeam1D(Fin, x0 = 0.001, a = 100):
     :type a: int, float
 
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     .. code-block::
     
-        from LightPipes import *
+        from OptimLightPipes import *
         import matplotlib.pyplot as plt
         import numpy as np
         
@@ -52,7 +52,7 @@ def AiryBeam1D(Fin, x0 = 0.001, a = 100):
                    )
         plt.xlabel('x [mm]')
         plt.ylabel('z [cm]')
-        s = r'LightPipes for Python' + '\\n'+ '1D Airy beam' + '\\n\\n'\\
+        s = r'OptimLightPipes for Python' + '\\n'+ '1D Airy beam' + '\\n\\n'\\
             r'$\\lambda = {:4.2f}$'.format(wavelength/um) + r' ${\\mu}m$' + '\\n'\\
             r'$size = {:4.2f}$'.format(size/mm) + r' $mm$' + '\\n'\\
             r'$N = {:4d}$'.format(N) + '\\n'\\
@@ -90,12 +90,12 @@ def AiryBeam2D(Fin, x0 = 0.001, y0 = 0.001, a1 = 100, a2 = 100):
     :type a2: int, float
 
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     .. code-block::
     
-        from LightPipes import *
+        from OptimLightPipes import *
         import matplotlib.pyplot as plt
         import numpy as np
         
@@ -119,7 +119,7 @@ def AiryBeam2D(Fin, x0 = 0.001, y0 = 0.001, a1 = 100, a2 = 100):
         plt.title('2D Airy beam')
         plt.xlabel('x [mm]')
         plt.ylabel('y [mm]')
-        s = r'LightPipes for Python' + '\\n'+ '2D Airy beam' + '\\n\\n'\\
+        s = r'OptimLightPipes for Python' + '\\n'+ '2D Airy beam' + '\\n\\n'\\
             r'$\\lambda = {:4.2f}$'.format(wavelength/um) + r' ${\\mu}m$' + '\\n'\\
             r'$size = {:4.2f}$'.format(size/mm) + r' $mm$' + '\\n'\\
             r'$N = {:4d}$'.format(N) + '\\n'\\
@@ -156,7 +156,7 @@ def PointSource(Fin, x=0.0, y=0.0):
     :param y: y-position of the point source (default = 0.0)
     :type y: int, float    
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = PointSource(F) # point source at center of the grid
@@ -190,7 +190,7 @@ def PlaneWave(Fin, w, tx=0.0, ty=0.0, x_shift=0.0, y_shift=0.0):
     :param y_shift: shift in y direction (default = 0.0)
     :type y_shift: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = PlaneWave(F, w = 2*mm) # plane wave with diameter of 2 mm at center of the grid
@@ -225,7 +225,7 @@ def GaussBeam( Fin, w0, n=0, m=0, x_shift=0, y_shift=0, tx=0, ty=0, doughnut=Fal
     :param LG: if True a (n,m) Laguerre-Gauss mode is generated, if False a Hermite Gauss mode (default = False)
     :type LG: bool
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> w0 = 3*mm

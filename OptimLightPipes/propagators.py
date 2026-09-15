@@ -9,8 +9,10 @@ from . import tictoc
 from .subs import elim, elimH, elimV
 from .misc import backward_compatible
 from .core import D4sigma
-from ._kernels import forward_kernel, steps_sweep_rows, steps_sweep_cols
-from LightPipes.config import _USE_PYFFTW
+from ._kernels import (forward_kernel, steps_sweep_rows, steps_sweep_cols,
+                       forvard_CC)
+from ._fft import get_fft as _get_fft, empty_aligned as _empty_aligned
+from .config import _USE_PYFFTW
 
 @backward_compatible
 def Fresnel(Fin, z, usepyFFTW = False):
@@ -25,7 +27,7 @@ def Fresnel(Fin, z, usepyFFTW = False):
                        Has no effect if _USEPYFFTW = True in config.py
     :type usepyFFTW: bool
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Examples:
     
     >>> F = Fresnel(F, 20*cm) # propagates the field 20 cm
@@ -88,34 +90,11 @@ def _field_Fresnel(z, field, dx, lam, dtype, usepyFFTW):
             more row/col to fill entire field. No errors noticed with the new
             method so far
     ************************************************************* """
-    _using_pyfftw = False # determined if loading is successful  
-    if usepyFFTW or _USE_PYFFTW:
-        try:
-            import pyfftw as _pyfftw
-            from pyfftw.interfaces.numpy_fft import fft2 as _fft2
-            from pyfftw.interfaces.numpy_fft import ifft2 as _ifft2
-            _fftargs = {'planner_effort': 'FFTW_ESTIMATE',
-                        'overwrite_input': True,
-                        'threads': -1} #<0 means use multiprocessing.cpu_count()
-            _using_pyfftw = True 
-        except ImportError:
-            #import warnings
-            #warnings.warn(_WARNING)
-            _WARNING =  '\n**************************** WARNING ***********************\n'\
-            +'In the Fresnel command you required FFT with the pyFFTW package.\n'\
-            +'or  _USE_PYFFTW = True in your config.py file.\n'\
-            +'However LightPipes cannot import pyFFTW because it is not installed.\n'\
-            +'Falling back to numpy.fft.\n'\
-            +'(Try to) install pyFFTW on your computer for faster performance.\n'\
-            +'Enter at a terminal prompt: python -m pip install pyfftw.\n'\
-            +'Or reinstall LightPipes with the option pyfftw\n'\
-            +'Enter: python -m pip install lightpipes[pyfftw]\n\n'\
-            +'*************************************************************'
-            print(_WARNING)
-    if not _using_pyfftw:
-        from numpy.fft import fft2 as _fft2
-        from numpy.fft import ifft2 as _ifft2
-        _fftargs = {}
+    """The FFT is the dominant cost here (~82% of this routine at N=1024), so
+    it is worth routing through pyFFTW when available. _fft.get_fft() also
+    enables pyFFTW's plan cache, without which the interfaces re-plan on every
+    call and most of the benefit is lost."""
+    _fft2, _ifft2, _fftargs, _using_pyfftw = _get_fft(usepyFFTW or _USE_PYFFTW)
     tictoc.tic()
     N = field.shape[0] #assert square
     
@@ -138,12 +117,8 @@ def _field_Fresnel(z, field, dx, lam, dtype, usepyFFTW):
         field instead of the whole field. Necessary for symmetry of first
         step involving Fresnel integral calc.
     """
-    if _using_pyfftw:
-        in_outF = _pyfftw.zeros_aligned((2*N, 2*N),dtype=dtype)
-        in_outK = _pyfftw.zeros_aligned((2*N, 2*N),dtype=dtype)
-    else:
-        in_outF = _np.zeros((2*N, 2*N),dtype=dtype)
-        in_outK = _np.zeros((2*N, 2*N),dtype=dtype)
+    in_outF = _empty_aligned((2*N, 2*N), dtype)
+    in_outK = _empty_aligned((2*N, 2*N), dtype)
     
     """Our grid is zero-centered, i.e. the 0 coordiante (beam axis) is
     not at field[0,0], but field[No2, No2]. The FFT however is implemented
@@ -264,7 +239,7 @@ def Forward(Fin, z, sizenew, Nnew ):
     :param z: propagation distance
     :type z: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = Forward(F, 20*cm, 10*mm, 20) # propagates the field 20 cm, for a new grid size of 10 mm and a new grid dimension 20
@@ -309,7 +284,7 @@ def Forward(Fin, z, sizenew, Nnew ):
         0.5j * sum_ij field[j,i] * (A4[j]-A2[j]) * (A3[i]-A1[i])
 
     which is rank-1 in (i,j), so the double sum factorizes and the routine
-    becomes O(N^3). See LightPipes/_kernels.py.
+    becomes O(N^3). See OptimLightPipes/_kernels.py.
     """
     field_out[:, :] = forward_kernel(field_in, X_old, X_new, Y_old, Y_new,
                                      dx_old, R22)
@@ -329,7 +304,7 @@ def Forvard(Fin, z, usepyFFTW = False):
                        Has no effect if _USEPYFFTW = True in config.py
     :type usepyFFTW: bool
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Examples:
     
     >>> F = Forvard(F, 20*cm) # propagates the field 20 cm
@@ -342,34 +317,7 @@ def Forvard(Fin, z, usepyFFTW = False):
         
         * :ref:`Examples: Diffraction from a circular aperture.<Diffraction from a circular aperture.>`
     """
-    _using_pyfftw = False # determined if loading is successful
-    if usepyFFTW or _USE_PYFFTW:
-        try:
-            import pyfftw as _pyfftw
-            from pyfftw.interfaces.numpy_fft import fft2 as _fft2
-            from pyfftw.interfaces.numpy_fft import ifft2 as _ifft2
-            _fftargs = {'planner_effort': 'FFTW_ESTIMATE',
-                        'overwrite_input': True,
-                        'threads': -1} #<0 means use multiprocessing.cpu_count()
-            _using_pyfftw = True 
-        except ImportError:
-            #import warnings
-            #warnings.warn(_WARNING)
-            _WARNING =  '\n**************************** WARNING ***********************\n'\
-            +'In the Forvard command you required FFT with the pyFFTW package, \n'\
-            +'or  _USE_PYFFTW = True in your config.py file.\n'\
-            +'However LightPipes cannot import pyFFTW because it is not installed.\n'\
-            +'Falling back to numpy.fft.\n'\
-            +'(Try to) install pyFFTW on your computer for faster performance.\n'\
-            +'Enter at a terminal prompt: python -m pip install pyfftw.\n'\
-            +'Or reinstall LightPipes with the option pyfftw\n'\
-            +'Enter: python -m pip install lightpipes[pyfftw]\n\n'\
-            +'*************************************************************'
-            print(_WARNING)
-    if not _using_pyfftw:
-        from numpy.fft import fft2 as _fft2
-        from numpy.fft import ifft2 as _ifft2
-        _fftargs = {}
+    _fft2, _ifft2, _fftargs, _using_pyfftw = _get_fft(usepyFFTW or _USE_PYFFTW)
 
     if z==0:
         Fout = Field.copy(Fin)
@@ -380,10 +328,7 @@ def Forvard(Fin, z, usepyFFTW = False):
     lam = Fout.lam
     dtype = Fin._dtype
     
-    if _using_pyfftw:
-        in_out = _pyfftw.zeros_aligned((N, N),dtype=dtype)
-    else:
-        in_out = _np.zeros((N, N),dtype=dtype)
+    in_out = _empty_aligned((N, N), dtype)
     in_out[:,:] = Fin.field
     
     _2pi = 2*_np.pi
@@ -405,17 +350,9 @@ def Forvard(Fin, z, usepyFFTW = False):
     in_out *= iiij
     
     z1 = z*lam/2
-    No2 = int(N/2)
-
-    SW = _np.arange(-No2, N-No2)/size
-    SW *= SW
-    SSW = SW.reshape((-1,1)) + SW #fill NxN shape like np.outer()
-    Bus = z1 * SSW
-    Ir = Bus.astype(int) #truncate, not round
-    Abus = _2pi*(Ir-Bus) #clip to interval [-2pi, 0]
-    Cab = _np.cos(Abus)
-    Sab = _np.sin(Abus)
-    CC = Cab + 1j * Sab #noticably faster than writing exp(1j*Abus)
+    # SSW, Bus, Ir, Abus, Cab, Sab and CC were seven separate NxN temporaries;
+    # one elementwise gufunc over the grid produces CC directly.
+    CC = forvard_CC(N, size, z1, _2pi)
     
     if zz >= 0.0:
         in_out = _fft2(in_out, **_fftargs)
@@ -442,12 +379,12 @@ def GForvard(Fin,z):
     :param z: propagation distance
     :type z: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     .. code-block::
     
-        from LightPipes import *
+        from OptimLightPipes import *
         
         wavelength = 500*nm
         size = 7*mm
@@ -477,12 +414,12 @@ def ABCD(Fin, M):
     :param M: 2 x 2 ABCD matrix
     :type M: List
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     .. code-block::
     
-        from LightPipes import *
+        from OptimLightPipes import *
         
         wavelength = 500*nm
         size = 7*mm
@@ -625,7 +562,7 @@ def Steps(Fin, z, nstep = 1, refr = 1.0, save_ram=False, use_scipy=False):
     :param use_scipy: should not be used; for development only! (default = False)
     :type use_scipy: bool    
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     .. seealso::
@@ -753,7 +690,7 @@ def _StepsArrayElim(z, nstep, _refr, Fin):
     
     """The refraction part (real part of refr. index n) is separated out
     and applied as a phase term instead of stepping through like the
-    imaginary part. According to LightPipes for MATLAB manual, this proved
+    imaginary part. According to OptimLightPipes for MATLAB manual, this proved
     to be more stable."""
     
     # expfi4 = _np.exp(1j*0.25*K*dz*(refr.real-1.0))
@@ -967,7 +904,7 @@ def _StepsLoopElim(z, nstep, _refr, Fin):
     
     """The refraction part (real part of refr. index n) is separated out
     and applied as a phase term instead of stepping through like the
-    imaginary part. According to LightPipes for MATLAB manual, this proved
+    imaginary part. According to OptimLightPipes for MATLAB manual, this proved
     to be more stable."""
     
     # expfi4 = _np.exp(1j*0.25*K*dz*(refr.real-1.0))

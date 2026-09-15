@@ -23,7 +23,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 import LightPipes_ref as ref  # noqa: E402
-import LightPipes as new  # noqa: E402
+import OptimLightPipes as new  # noqa: E402
 
 
 UPSTREAM_COMMIT = (_REF_DIR / "UPSTREAM_COMMIT").read_text().strip()

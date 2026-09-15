@@ -232,8 +232,89 @@ def test_lptest_golden():
 
     Uses that function's exact (unit-free) parameters so the hardcoded sum applies.
     """
-    import LightPipes as L
+    import OptimLightPipes as L
 
     F = L.Begin(1.8, 2.5, 55)
     F = L.Fresnel(F, 10)
     assert float(np.sum(L.Intensity(F))) == pytest.approx(16.893173606654138, rel=1e-12)
+
+
+# --------------------------------------------------------------------------
+# FFT backend
+# --------------------------------------------------------------------------
+
+@both_dtypes
+@pytest.mark.parametrize("N", [64, 128])
+def test_fresnel_pyfftw_matches_numpy(lp, dtype, N):
+    """The pyFFTW backend must agree with the numpy one (and with upstream)."""
+    new, ref = lp
+    a, b = make_pair(lp, N, dtype)
+    a, b = _aperture(a, b, lp)
+    assert_fields_match(
+        new.Fresnel(a, 0.3, usepyFFTW=True),
+        ref.Fresnel(b, 0.3),
+        FFT[dtype],
+        label=f"Fresnel pyFFTW N={N}",
+    )
+
+
+@both_dtypes
+def test_forvard_pyfftw_matches_numpy(lp, dtype):
+    new, ref = lp
+    a, b = make_pair(lp, 128, dtype)
+    a, b = _aperture(a, b, lp)
+    assert_fields_match(
+        new.Forvard(a, 0.3, usepyFFTW=True),
+        ref.Forvard(b, 0.3),
+        FFT[dtype],
+        label="Forvard pyFFTW",
+    )
+
+
+def test_fft_thread_control():
+    """Thread count is settable and independent of the numba pool."""
+    import OptimLightPipes as L
+    from OptimLightPipes._fft import get_fft_threads, set_fft_threads
+
+    original = get_fft_threads()
+    try:
+        assert set_fft_threads(2) == 2
+        F = L.CircAperture(L.Begin(GRID_SIZE, WAVELENGTH, 64), 1e-3)
+        one = L.Fresnel(F, 0.3, usepyFFTW=True).field
+        set_fft_threads(1)
+        two = L.Fresnel(F, 0.3, usepyFFTW=True).field
+        assert_arrays_match(one, two, 1e-12, label="fft threads")
+    finally:
+        set_fft_threads(original)
+
+
+@both_dtypes
+def test_fft_backend_switch_agrees(lp, dtype):
+    """Both backends must produce the same field, and match upstream."""
+    import OptimLightPipes as L
+
+    new, ref = lp
+    original = L.get_fft_backend()
+    try:
+        L.set_fft_backend("numpy")
+        a, b = make_pair(lp, 128, dtype)
+        a, b = _aperture(a, b, lp)
+        with_numpy = new.Fresnel(a, 0.3).field
+
+        L.set_fft_backend("auto")
+        a2, _ = make_pair(lp, 128, dtype)
+        a2 = new.CircAperture(a2, 1.0e-3)
+        with_auto = new.Fresnel(a2, 0.3).field
+    finally:
+        L.set_fft_backend(original)
+
+    assert_arrays_match(with_auto, with_numpy, FFT[dtype], label="backend switch")
+    assert_arrays_match(with_auto, ref.Fresnel(b, 0.3).field, FFT[dtype],
+                        label="auto vs upstream")
+
+
+def test_fft_backend_rejects_unknown():
+    import OptimLightPipes as L
+
+    with pytest.raises(ValueError):
+        L.set_fft_backend("fftw3")

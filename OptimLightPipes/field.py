@@ -225,7 +225,7 @@ class Field:
         
         """
         
-        """LightPipes manual/ examples Matlab and Python version:
+        """OptimLightPipes manual/ examples Matlab and Python version:
             plotting the Intensity with imshow() yields coord sys:
                 positive shift in x is right
                 positive shift in y is down!!

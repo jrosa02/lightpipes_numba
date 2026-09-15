@@ -120,7 +120,7 @@ def Gain(Fin, Isat, alpha0, Lgain) :
     :param Lgain: length of the gain medium
     :type Lgain: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
 
     >>> Isat=131*W/cm/cm; alpha=0.0067/cm; Lgain=30*cm;
@@ -163,7 +163,7 @@ def PipFFT(Fin, index = 1 ):
     :param index: 1 = forward transform, -1 = back transform (default = 1)
     :type index: int, float
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = PipFFT(F) # forward transform
@@ -236,7 +236,7 @@ def Tilt( Fin, tx, ty,):
     :param ty: tilt in radians
     :type ty: int, float    
     :return: output field (N x N square array of complex numbers).
-    :rtype: `LightPipes.field.Field`
+    :rtype: `OptimLightPipes.field.Field`
     :Example:
     
     >>> F = Tilt(F, tx = 2*mrad, ty = 1*mrad) # wavefront tilt of 2 mrad in x and 1 mrad in y direction
