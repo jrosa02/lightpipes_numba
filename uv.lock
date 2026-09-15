@@ -353,18 +353,13 @@ wheels = [
 [[package]]
 name = "optimlightpipes"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
     { name = "numba" },
     { name = "numpy" },
     { name = "pyfftw" },
     { name = "scipy" },
-]
-
-[package.optional-dependencies]
-pyfftw = [
-    { name = "pyfftw" },
 ]
 
 [package.dev-dependencies]
@@ -379,10 +374,8 @@ requires-dist = [
     { name = "numba", specifier = ">=0.67.0" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "pyfftw", specifier = ">=0.15.1" },
-    { name = "pyfftw", marker = "extra == 'pyfftw'" },
     { name = "scipy", specifier = ">=1.11" },
 ]
-provides-extras = ["pyfftw"]
 
 [package.metadata.requires-dev]
 dev = [

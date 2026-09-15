@@ -12,9 +12,6 @@ dependencies = [
     "pyfftw>=0.15.1",
 ]
 
-[project.optional-dependencies]
-pyfftw = ["pyfftw"]
-
 [dependency-groups]
 dev = [
     "pytest>=8.0",
@@ -28,6 +25,12 @@ dev = [
 # The 14 root-level test_*.py files are demos: no asserts, and they call a
 # blocking plt.show(). Only collect the real suite under tests/.
 testpaths = ["tests"]
+
+[build-system]
+# Without this table uv treats the project as "virtual" and never installs it
+# into its own venv, so scripts outside the repo root cannot import it.
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["OptimLightPipes"]
