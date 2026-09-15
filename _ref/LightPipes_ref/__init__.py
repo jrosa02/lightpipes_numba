@@ -58,10 +58,7 @@ __all__ = [
     'LPtest',
     'LPhelp',
     'LPdemo',
-    'warmup',
-    'set_num_threads',
-    'get_num_threads',
-    'HAVE_NUMBA',
+    
 ]
 
 #User defined functions from userfunc.py:
@@ -113,31 +110,6 @@ from .misc import Tilt, Gain, PipFFT
 from .core import Interpol
 from .sources import AiryBeam1D, AiryBeam2D, PointSource, GaussBeam, PlaneWave
 from .userfunc import ZonePlate, CylindricalLens, RowOfFields, FieldArray2D
-from ._numba_compat import (HAVE_NUMBA, get_num_threads, set_num_threads)
-
-
-def warmup(N=32):
-    """*Compile (or load from cache) the numba kernels ahead of time.*
-
-    The first call into each accelerated routine pays a one-off compilation
-    cost of a few seconds. Kernels are built with cache=True, so this is paid
-    once per machine and then reused; call this at import time in a latency
-    sensitive application to move that cost off the first real computation.
-
-    :param N: grid dimension used for the dummy calls (default = 32)
-    :type N: int
-
-    >>> import LightPipes; LightPipes.warmup()
-    """
-    import numpy as _np
-    for dtype in (_np.complex128, _np.complex64):
-        F = Begin(1.0, 1.0e-6, N, dtype)
-        F = CircAperture(F, 0.3)
-        Forward(F, 0.1, 1.0, N // 2)
-        Steps(F, 0.001, 1, 1.0, False)
-        Steps(F, 0.001, 1, 1.0, True)
-        PhaseUnwrap(Phase(F))
-    return None
 
 def Begin(size,labda,N,dtype=None):
     """

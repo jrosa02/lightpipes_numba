@@ -115,3 +115,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# vendored upstream oracle for differential tests (see tests/conftest.py)
+_ref/LightPipes_ref/__pycache__/

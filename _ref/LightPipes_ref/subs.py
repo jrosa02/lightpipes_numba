@@ -8,8 +8,6 @@ Created on Sun Feb 23 19:55:44 2020
 from math import pi as Pi
 import numpy as _np
 
-from ._kernels import elim_rows as _elim_rows, elim_cols as _elim_cols
-
 def H(n, x):
     """
     Used for GaussHermite
@@ -246,13 +244,35 @@ def elimH(N, a, b, c, p, UU, alpha, beta):
     elimH. Called by LPSteps
     Double sweep elimination along the horizontal direction, i.e. row-wise
     Inputs NxN arrays or scalars
-
-    Delegates to the parallel gufunc in _kernels: the sweep is sequential
-    within a row, but the N rows are independent systems solved concurrently.
-    `alpha` and `beta` are kept in the signature for backward compatibility;
-    the kernel uses its own per-row scratch.
     """
-    _elim_rows(N, a, b, c, p, UU)
+    """
+    /* initial condition, everything is going to be zero at the edge */
+    """
+    alpha[:,0] = 0.0
+    beta[:,0] = 0.0
+    
+    alpha[:,N-2] = 0.0
+    beta[:,N-2] = 0.0
+    
+    """
+    //* forward elimination */
+    """
+    for i in range(1, N-2):
+        cc = c[:,i] - a * alpha[:,i-1]
+        alpha[:,i] = b / cc
+        beta[:,i]  = (p[:,i] + a * beta[:,i-1] ) / cc
+    #basically same as one more loop ??:
+    cc = c[:,N-1] - a * alpha[:,N-2]
+    beta[:,N-1]  = (p[:,N-1] + a * beta[:,N-2] ) / cc
+    """
+    //* edge amplitude =0 */
+    """
+    UU[:,N-1] = beta[:,N-1]
+    """
+    //* backward elimination        */
+    """
+    for i in range(N-2, -1, -1):
+        UU[:,i] = alpha[:,i] * UU[:,i+1] + beta[:,i]
     pass #modified in place, no return!
 
 
@@ -261,11 +281,36 @@ def elimV(N, a, b, c, p, uu, alpha, beta):
     elimV. Called by LPSteps
     Double sweep elimination along the vertical direction, i.e. column-wise
     Inputs NxN arrays or scalars
-
-    Same kernel as elimH, applied to transposed views. gufuncs accept
-    non-contiguous input directly, so no copy is made.
     """
-    _elim_cols(N, a, b, c, p, uu)
+    """
+    /* initial condition, everything is going to be zero at the edge */
+    """
+    alpha[0,:] = 0.0
+    beta[0,:] = 0.0
+    
+    alpha[N-2,:] = 0.0
+    beta[N-2,:] = 0.0
+    
+    """
+    //* forward elimination */
+    """
+    for i in range(1, N-2):
+        cc = c[i,:] - a * alpha[i-1]
+        alpha[i,:] = b / cc
+        beta[i,:]  = (p[i,:] + a * beta[i-1,:] ) / cc
+    #basically same as one more loop ??:
+    cc = c[N-1,:] - a * alpha[N-2,:]
+    beta[N-1,:]  = (p[N-1,:] + a * beta[N-2,:] ) / cc
+    """
+    //* edge amplitude =0 */
+    """
+    uu[N-1,:] = beta[N-1,:]
+    """
+    //* backward elimination        */
+    """
+    for i in range(N-2, -1, -1):
+        uu[i,:] = alpha[i,:] * uu[i+1,:] + beta[i,:]
+        
     pass #modified in place, no return!
 
 

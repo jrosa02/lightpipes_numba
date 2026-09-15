@@ -9,8 +9,7 @@ from . import tictoc
 from .subs import elim, elimH, elimV
 from .misc import backward_compatible
 from .core import D4sigma
-from ._kernels import forward_kernel, steps_sweep_rows, steps_sweep_cols
-from LightPipes.config import _USE_PYFFTW
+from .config import _USE_PYFFTW  # vendored oracle: made relative (was absolute)
 
 @backward_compatible
 def Fresnel(Fin, z, usepyFFTW = False):
@@ -301,18 +300,50 @@ def Forward(Fin, z, sizenew, Nnew ):
     Y_new = X_new #same
     X_old = _np.arange(-on2, old_n-on2) * dx_old
     Y_old = X_old #same
-
-    """The original implementation looped over every output pixel and built 17
-    N x N outer products per pixel (O(N^4) work, 17 N x N allocations per
-    pixel). With A_k = Fc_k + 1j*Fs_k that whole expression equals
-
-        0.5j * sum_ij field[j,i] * (A4[j]-A2[j]) * (A3[i]-A1[i])
-
-    which is rank-1 in (i,j), so the double sum factorizes and the routine
-    becomes O(N^3). See LightPipes/_kernels.py.
-    """
-    field_out[:, :] = forward_kernel(field_in, X_old, X_new, Y_old, Y_new,
-                                     dx_old, R22)
+    for i_new in range(new_n):
+        x_new = X_new[i_new]
+        
+        P1 = R22*(2*(X_old-x_new)+dx_old)
+        P3 = R22*(2*(X_old-x_new)-dx_old)
+        Fs1, Fc1 = _fresnel(P1)
+        Fs3, Fc3 = _fresnel(P3)
+        for j_new in range(new_n):
+            y_new = Y_new[j_new]
+            
+            P2 = R22*(2*(Y_old-y_new)-dx_old)
+            P4 = R22*(2*(Y_old-y_new)+dx_old)
+            Fs2, Fc2 = _fresnel(P2)
+            Fs4, Fc4 = _fresnel(P4)
+            
+            C4C1=_np.outer(Fc4, Fc1) #out[i, j] = a[i] * b[j] 
+            C2S3=_np.outer(Fc2, Fs3) #->  out[j,i] = a[j]*b[i] here
+            C4S1=_np.outer(Fc4, Fs1)
+            S4C1=_np.outer(Fs4, Fc1)
+            S2C3=_np.outer(Fs2, Fc3)
+            C2S1=_np.outer(Fc2, Fs1)
+            S4C3=_np.outer(Fs4, Fc3)
+            S2C1=_np.outer(Fs2, Fc1)
+            C4S3=_np.outer(Fc4, Fs3)
+            S2S3=_np.outer(Fs2, Fs3)
+            S2S1=_np.outer(Fs2, Fs1)
+            C2C3=_np.outer(Fc2, Fc3)
+            S4S1=_np.outer(Fs4, Fs1)
+            C4C3=_np.outer(Fc4, Fc3)
+            C4C1=_np.outer(Fc4, Fc1)
+            S4S3=_np.outer(Fs4, Fs3)
+            C2C1=_np.outer(Fc2, Fc1)
+            
+            Fr = 0.5 * field_in.real
+            Fi = 0.5 * field_in.imag
+            Temp_c = (Fr * (C2S3 + C4S1 + S4C1 + S2C3
+                            - C2S1 - S4C3 - S2C1 - C4S3)
+                      + Fi * (-S2S3 + S2S1 + C2C3 - S4S1
+                              - C4C3 + C4C1 + S4S3 - C2C1)
+                      + 1j * Fr *(-C4C1 + S2S3 + C4C3 - S4S3
+                                  + C2C1 - S2S1 + S4S1 - C2C3)
+                      + 1j * Fi*(C2S3 + S2C3 + C4S1 + S4C1
+                                 - C4S3 - S4C3 - C2S1 - S2C1))
+            field_out[j_new, i_new] = Temp_c.sum() #complex elementwise sum
     Fout._IsGauss=False
     return Fout
 
@@ -1004,20 +1035,20 @@ def _StepsLoopElim(z, nstep, _refr, Fin):
         """
         Fout.field *= expfi4 #*=_np.exp(1j*(0.25*K*dz*(refr.real-1.0)))
         
-        """All N-2 row solves are batched into one parallel gufunc call.
-        This is safe because upstream writes row j-1 only *after* reading rows
-        j-1, j and j+1, so no elim ever sees an already-updated row -- the
-        staggered uu2 write-back below reproduces the original indexing."""
-        UUrows = steps_sweep_rows(Fout.field, CCX, a, b, delta2, imPi4lz)
-
-        """UUrows[m] is the solve for row j=m+1. The staggered uu2 write-back
-        is reproduced exactly: solve(j) lands in field[j-1] on the *next*
-        iteration, so field[0] gets the initial zeros, field[k]=uu_k for
-        k=1..N-3, field[N-1]=uu_(N-2), and field[N-2] is never written at all
-        (an upstream quirk, preserved deliberately)."""
-        Fout.field[0, :] = 0.0
-        Fout.field[1:N-2, :] = UUrows[0:N-3, :] #uu_1 .. uu_(N-3)
-        Fout.field[N-1, :] = UUrows[N-3, :] #uu_(N-2); field[N-2] left alone
+        for j in range(1, N-1):
+            uij = Fout.field[j, 1:N-1]
+            uij1 = Fout.field[j+1, 1:N-1]
+            uij_1 = Fout.field[j-1, 1:N-1]
+            p[1:N-1] = -1/delta2 * (uij_1 + uij1 -2.0 * uij) + imPi4lz * uij
+            
+            elim(N, a, b, CCX[j,:], p, uu, alpha, beta)
+            
+            Fout.field[j-1, :] = uu2[:] #apply result from previous elim!
+            uu2[:] = uu[:] #store this elim for next application
+            # this is necessary to not overwrite the data used in the next
+            # elim step
+        
+        Fout.field[N-1, :] = uu2[:] #apply final elim in this direction
         
         Fout.field *= expfi4 #*=_np.exp(1j*(0.25*K*dz*(refr.real-1.0)))
         Fout.field *= expfi4 #twice makes it 0.5*k*dz*(n-1)
@@ -1027,16 +1058,17 @@ def _StepsLoopElim(z, nstep, _refr, Fin):
         """
         uu2[:] = 0.0
         
-        """Batched column sweep, same reasoning as the row sweep above:
-        column i-1 is written only after columns i-1, i, i+1 have been read,
-        so every solve sees the original field. UUcols[m] is the solve for
-        column i=m+1, and the staggered write-back puts uu_i into column i-1,
-        leaving column 0 zeroed and column N-2 to the final write below."""
-        UUcols = steps_sweep_cols(Fout.field, CCY, a, b, delta2, imPi4lz)
-
-        Fout.field[:, 0] = 0.0
-        Fout.field[:, 1:N-2] = UUcols[0:N-3, :].T #uu_1 .. uu_(N-3)
-
+        for i in range(1, N-1):
+            uij = Fout.field[1:N-1, i]
+            ui1j = Fout.field[1:N-1, i+1]
+            ui_1j = Fout.field[1:N-1, i-1]
+            p[1:N-1] = -1/delta2 * (ui_1j + ui1j -2.0 * uij) + imPi4lz * uij
+            
+            elim(N, a, b, CCY[:,i], p, uu, alpha, beta)
+            
+            Fout.field[:, i-1] = uu2[:]
+            uu2[:] = uu[:]
+        
         #TODO BUG! why are we accessing i here? out of scope. Last value:
         #resulting from for(ii in range(1, N-2, 2))
         # -> last ii in loop is int((N-2)/2)*2-1
@@ -1045,8 +1077,7 @@ def _StepsLoopElim(z, nstep, _refr, Fin):
         # tested OK for even and odd N -> works for all N
         i = int((N-2)/2)*2
         #TODO also, why 0:N-1 where all else is 0:N?
-        # uu2 after the loop holds the last solve, uu_(N-2) == UUcols[N-3].
-        Fout.field[0:N-1, i] = UUcols[N-3, 1:N]
+        Fout.field[0:N-1, i] = uu2[1:N]
     """
     ///* end j */
     """

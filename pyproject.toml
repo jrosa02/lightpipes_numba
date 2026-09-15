@@ -1,0 +1,28 @@
+[project]
+name = "lightpipes-numba"
+version = "0.1.0"
+description = "LightPipes accelerated with numba guvectorize kernels"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "numba>=0.67.0",
+    "numpy>=2.0",
+    "scipy>=1.11",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+pyfftw = ["pyfftw"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+# The 14 root-level test_*.py files are demos: no asserts, and they call a
+# blocking plt.show(). Only collect the real suite under tests/.
+testpaths = ["tests"]
+
+[tool.setuptools]
+packages = ["LightPipes"]
