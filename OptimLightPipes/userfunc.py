@@ -161,8 +161,9 @@ def CylindricalLens(Fin,f,x_shift=0.0,y_shift=0.0,angle=0.0):
     Fout = Field.copy(Fin)
     k = 2*_np.pi/Fout.lam
     yy, xx = Fout.mgrid_cartesian
-    xx -= x_shift
-    yy -= y_shift
+    # shared read-only grids: shift out of place
+    xx = xx - x_shift
+    yy = yy - y_shift
     if angle!=0.0:
         cc = _np.cos(angle)
         ss = _np.sin(angle)

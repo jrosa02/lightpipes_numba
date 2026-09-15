@@ -39,8 +39,9 @@ def Axicon(Fin, phi, n1 = 1.5, x_shift = 0.0, y_shift = 0.0 ):
     theta = _np.arcsin(n1*_np.cos(phi/2)+phi/2-_np.pi/2)
     Ktheta = k * theta
     yy, xx = Fout.mgrid_cartesian
-    xx -= x_shift
-    yy -= y_shift
+    # mgrid_* grids are shared and read-only (see field.py), so shift out of place
+    xx = xx - x_shift
+    yy = yy - y_shift
     fi = -Ktheta*_np.sqrt(xx**2+yy**2)
     Fout.field *= _np.exp(1j*fi)
     Fout._IsGauss=False
@@ -158,8 +159,9 @@ def Lens(Fin, f, x_shift = 0.0, y_shift = 0.0):
             _2pi = 3.1415926*2
         k = _2pi/Fout.lam
         yy, xx = Fout.mgrid_cartesian
-        xx -= x_shift
-        yy -= y_shift
+        # shared read-only grids: shift out of place
+        xx = xx - x_shift
+        yy = yy - y_shift
         fi = -k*(xx**2+yy**2)/(2*f)
         Fout.field *= _np.exp(1j * fi)
         Fout._IsGauss=False

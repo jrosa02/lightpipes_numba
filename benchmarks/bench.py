@@ -26,7 +26,13 @@ SIZE = 5.0e-3
 
 
 def _time(fn, repeat=3):
-    """Best-of-`repeat` wall time, plus the last result."""
+    """Best-of-`repeat` wall time, plus the last result.
+
+    Best-of rather than mean: these routines are multi-threaded and the two
+    implementations run back to back, so the distribution has a long right
+    tail from scheduler contention. The minimum is the most stable estimate
+    of the work actually done.
+    """
     best = float("inf")
     out = None
     for _ in range(repeat):
@@ -86,6 +92,20 @@ def _bench_interpol(mod, N):
     return mod.Interpol(_start(mod, N), SIZE, N, angle=15.0, magnif=0.8).field
 
 
+_ZERNIKE_FIELD = {}
+
+
+def _bench_zernike_fit(mod, N):
+    # Exercises the njit unwrap plus the cached coordinate grids, which are
+    # re-read once per Zernike term.
+    key = (id(mod), N)
+    if key not in _ZERNIKE_FIELD:
+        _ZERNIKE_FIELD[key] = mod.Zernike(
+            mod.CircAperture(mod.Begin(SIZE, LAM, N), 1.5e-3),
+            4, 0, 1.5e-3, 3 * LAM)
+    return np.asarray(mod.ZernikeFit(_ZERNIKE_FIELD[key], 20, 1.5e-3)[1])
+
+
 ROUTINES = {
     # Forward is O(N^3) here but O(N^4) upstream: keep the oracle sizes small.
     "forward": ([32, 64, 96, 128], _bench_forward),
@@ -95,6 +115,7 @@ ROUTINES = {
     "fresnel": ([256, 512, 1024], _bench_fresnel),
     "forvard": ([256, 512, 1024], _bench_forvard),
     "interpol": ([256, 512, 1024], _bench_interpol),
+    "zernike_fit": ([128, 256, 512], _bench_zernike_fit),
 }
 
 

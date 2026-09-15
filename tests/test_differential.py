@@ -318,3 +318,45 @@ def test_fft_backend_rejects_unknown():
 
     with pytest.raises(ValueError):
         L.set_fft_backend("fftw3")
+
+
+# --------------------------------------------------------------------------
+# Coordinate-grid consumers
+# --------------------------------------------------------------------------
+# The mgrid_* grids are cached and shared between Field instances, so any
+# routine that shifted them in place had to be changed to work on a copy.
+# These cover the routines that do so, including the shifted/rotated variants.
+
+@both_dtypes
+@pytest.mark.parametrize(
+    "name,call",
+    [
+        ("axicon", lambda m, f: m.Axicon(f, 0.01, 1.5, 1e-4, 1e-4)),
+        ("lens", lambda m, f: m.Lens(f, 0.5, 1e-4, 1e-4)),
+        ("cyl_lens", lambda m, f: m.CylindricalLens(f, 0.5, 1e-4, 1e-4, 0.3)),
+        ("glens", lambda m, f: m.GLens(f, 0.5)),
+        ("tilt", lambda m, f: m.Tilt(f, 1e-3, 1e-3)),
+    ],
+)
+def test_grid_consumers(lp, dtype, name, call):
+    new, ref = lp
+    a, b = make_pair(lp, 64, dtype)
+    assert_fields_match(call(new, a), call(ref, b), EXACT[dtype], label=name)
+
+
+def test_mgrid_cached_and_readonly():
+    """Grids are shared, so they must be immutable and identical per geometry."""
+    import OptimLightPipes as L
+
+    f1 = L.Begin(GRID_SIZE, WAVELENGTH, 64)
+    f2 = L.Begin(GRID_SIZE, WAVELENGTH, 64)
+    y1, x1 = f1.mgrid_cartesian
+    y2, x2 = f2.mgrid_cartesian
+    assert x1 is x2 and y1 is y2, "same geometry should share one cached grid"
+    assert not x1.flags.writeable
+
+    # A different geometry must not collide with the cached one.
+    f3 = L.Begin(2 * GRID_SIZE, WAVELENGTH, 64)
+    y3, x3 = f3.mgrid_cartesian
+    assert x3 is not x1
+    assert np.allclose(x3, 2 * np.asarray(x1))

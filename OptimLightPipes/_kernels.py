@@ -325,6 +325,51 @@ def elim_cols(N, a, b, c, p, UU):
     UU[:, :] = _elim_row(c.T, p.T, dt.type(a), dt.type(b)).T
 
 
+# ---------------------------------------------------------------------------
+# Bilinear interpolation (Interpol / Inv_Squares)
+# ---------------------------------------------------------------------------
+# Upstream gathers the four corner values with fancy indexing (four NxN
+# temporaries) and then combines them through ~10 more. One gufunc over the
+# output points does the gather and the blend with scalar loads.
+
+@guvectorize(
+    ['void(float64[:], float64[:], complex128[:,:], float64, complex128[:])',
+     'void(float64[:], float64[:], complex64[:,:], float64, complex64[:])'],
+    '(),(),(m,n),()->()')
+def _inv_squares(xn, yn, field, dx, out):
+    """Interpolate one point from its enclosing square of grid values."""
+    N = field.shape[0]
+    No2 = int(N / 2)
+
+    x_ = xn[0]
+    y_ = yn[0]
+    II = int(np.floor(x_ / dx + No2))
+    JJ = int(np.floor(y_ / dx + No2))
+
+    x = (II - No2) * dx
+    y = (JJ - No2) * dx
+
+    xlow = x_ - x
+    xhigh = x + dx - x_
+    ylow = y_ - y
+    yhigh = y + dx - y_
+
+    z = field[JJ, II]
+    zx = field[JJ, II + 1]
+    zy = field[JJ + 1, II]
+    zxy = field[JJ + 1, II + 1]
+
+    # Same division-free form as upstream (see Inv_Squares).
+    val = yhigh * (z * xhigh + zx * xlow)
+    val = val + ylow * (zy * xhigh + zxy * xlow)
+    out[0] = val / (dx * dx)
+
+
+def inv_squares_kernel(xn, yn, field, dx):
+    """Vectorized bilinear interpolation over the flat point lists xn, yn."""
+    return _inv_squares(xn, yn, field, float(dx))
+
+
 def forward_kernel(field_in, X_old, X_new, Y_old, Y_new, dx_old, R22):
     """Factorized Forward(). Returns the new field, shape (len(Y_new), len(X_new))."""
     dtype = field_in.dtype

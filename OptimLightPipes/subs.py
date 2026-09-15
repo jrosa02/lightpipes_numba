@@ -8,7 +8,8 @@ Created on Sun Feb 23 19:55:44 2020
 from math import pi as Pi
 import numpy as _np
 
-from ._kernels import elim_rows as _elim_rows, elim_cols as _elim_cols
+from ._kernels import (elim_rows as _elim_rows, elim_cols as _elim_cols,
+                       inv_squares_kernel as _inv_squares_kernel)
 
 def H(n, x):
     """
@@ -165,44 +166,13 @@ def Inv_Squares(xn,yn, field, dx):
         #TODO this is the wrong check. worked while not passing xs array
         # now we need another way of finding boundary xmin, xmax!
     
-    z = field[JJ, II] #II and JJ same length -> element-wise selection
-    zx = field[JJ, II+1]
-    zy = field[JJ+1, II]
-    zxy = field[JJ+1, II+1]
-    
-    """Changed from Cpp code to Python:
-        Some extra checks were made to avoid div by 0, however it turns
-        out re-writing the formulas below one can find an expression which
-        avoids the division altogether, probably also making the interpolation
-        more stable when having small numbers for xhigh/low/etc.
-        -> checks removed
-        -> math rephrased to contain mostly multip/addition
-    """
-    """
-    #old Cpp style:
-    # if (abs(xlow) < tol):
-    #     return z + ylow*(zy-z)/dx
-    # if (abs(ylow) < tol):
-    #     return z+xlow*(zx-z)/dx
-    # if (abs(xhigh) < tol):
-    #     return zx+ylow*(zxy-zx)/dx
-    # if (abs(yhigh) < tol):
-    #     return zy+xlow*(zxy-zy)/dx
-    
-    # s1=1./(xlow*ylow)
-    # s2=1./(xhigh*ylow)
-    # s3=1./(xlow*yhigh)
-    # s4=1./(xhigh*yhigh)
-    # summ = s1+s2+s3+s4
-    
-    # zout = z*s1 + zx*s2 + zy*s3 + zxy*s4
-    # zout /= summ
-    """
-    
-    zout = yhigh * (z*xhigh + zx*xlow)
-    zout += ylow * (zy*xhigh + zxy*xlow)
-    zout /= dx**2
-    return zout
+    """The gather and blend below are done in one gufunc pass over the output
+    points (see _kernels.inv_squares_kernel): upstream materialised four NxN
+    corner arrays plus ~10 more temporaries. The range checks above stay in
+    numpy so the ValueError behaviour is unchanged."""
+    return _inv_squares_kernel(xn, yn, field, dx)
+
+
 
 
 def elim(N, a, b, c, p, uu, alpha, beta):

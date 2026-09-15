@@ -8,6 +8,56 @@ Created on Sun Feb 23 17:53:56 2020
 
 import numpy as _np
 import copy as _copy
+from functools import lru_cache
+
+
+"""The coordinate grids below depend only on (N, dx), so they are cached at
+module level rather than per instance: the cache is then shared by every Field
+with the same geometry, and no Field is kept alive by it (an lru_cache on a
+method would hold a reference to self). Callers read these inside loops --
+ZernikeFit and ZernikeFilter fetch mgrid_polar once per Zernike term -- where
+recomputing np.mgrid/sqrt/arctan2 over the whole grid dominated.
+
+The returned arrays are shared, so they are marked read-only: an in-place
+write would otherwise corrupt every later caller.
+"""
+_GRID_CACHE_SIZE = 32
+
+
+def _frozen(*arrays):
+    for a in arrays:
+        a.flags.writeable = False
+    return arrays[0] if len(arrays) == 1 else arrays
+
+
+@lru_cache(maxsize=_GRID_CACHE_SIZE)
+def _mgrid_cartesian(N, dx):
+    h = w = N
+    cy, cx = int(h/2), int(w/2)
+    Y, X = _np.mgrid[:h, :w]
+    Y = (Y-cy)*dx
+    X = (X-cx)*dx
+    return _frozen(Y, X)
+
+
+@lru_cache(maxsize=_GRID_CACHE_SIZE)
+def _mgrid_Rsquared(N, dx):
+    Y, X = _mgrid_cartesian(N, dx)
+    return _frozen(X**2+Y**2)
+
+
+@lru_cache(maxsize=_GRID_CACHE_SIZE)
+def _mgrid_R(N, dx):
+    return _frozen(_np.sqrt(_mgrid_Rsquared(N, dx)))
+
+
+@lru_cache(maxsize=_GRID_CACHE_SIZE)
+def _mgrid_polar(N, dx):
+    Y, X = _mgrid_cartesian(N, dx)
+    r = _np.sqrt(X**2+Y**2)
+    phi = _np.arctan2(Y, X) + _np.pi
+    return _frozen(r, phi)
+
 
 class Field:
     """
@@ -236,20 +286,14 @@ class Field:
         For an odd number of pixels this puts a pixel in the center as expected
         for an even number, the "mid" pixel shifts right and down by 1
         """
-        h, w = self.N, self.N
-        cy, cx = int(h/2), int(w/2)
-        Y, X = _np.mgrid[:h, :w]
-        Y = (Y-cy)*self.dx
-        X = (X-cx)*self.dx
-        return (Y, X)
+        return _mgrid_cartesian(self.N, self.dx)
 
 
     @property
     def mgrid_Rsquared(self):
         """Return a meshgrid of radius R**2 in polar coordinates for each
         pixel in the field."""
-        Y, X = self.mgrid_cartesian
-        return X**2+Y**2
+        return _mgrid_Rsquared(self.N, self.dx)
 
 
     @property
@@ -257,16 +301,13 @@ class Field:
         """Return a meshgrid of radius R in polar coordinates for each
         pixel in the field."""
         #often phi might not be required, no need to calc it
-        return _np.sqrt(self.mgrid_Rsquared)
+        return _mgrid_R(self.N, self.dx)
 
 
     @property
     def mgrid_polar(self):
         """Return a meshgrid tuple (R, Phi) of polar coordinates for each
         pixel in the field (matching legacy LP convention)."""
-        Y, X = self.mgrid_cartesian
-        r = _np.sqrt(X**2+Y**2)
-        phi = _np.arctan2(Y, X) + _np.pi
-        return (r, phi)
+        return _mgrid_polar(self.N, self.dx)
 
 
